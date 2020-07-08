@@ -1,17 +1,17 @@
 package codes.neuralkatana.lexnotas.ui.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
-import android.view.View;
-import android.widget.ListView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
 import codes.neuralkatana.R;
 import codes.neuralkatana.lexnotas.dao.NotaDAO;
 import codes.neuralkatana.lexnotas.model.Nota;
-import codes.neuralkatana.lexnotas.ui.adapter.ListaNotasAdapter;
+import codes.neuralkatana.lexnotas.ui.recyclerview.adapter.ListaNotasAdapter;
 
 public class ListaNotasActivity extends AppCompatActivity {
 
@@ -26,10 +26,13 @@ public class ListaNotasActivity extends AppCompatActivity {
     }
 
     private void mostraListaDeNotas() {
-        ListView listaDeNotas = findViewById(R.id.listView);
+        RecyclerView listaDeNotas = findViewById(R.id.lista_notas_recyclerview);
         criaEPopulaDAO();
         List<Nota> todasNotas = dao.todos();
         listaDeNotas.setAdapter(new ListaNotasAdapter(this,todasNotas));
+        //LayoutManager criado via xml, criação via Java abaixo:
+        //LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        //listaDeNotas.setLayoutManager(layoutManager);
     }
 
     private void criaEPopulaDAO() {
