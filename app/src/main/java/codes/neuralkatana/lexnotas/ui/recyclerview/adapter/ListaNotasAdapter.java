@@ -19,7 +19,7 @@ public class ListaNotasAdapter extends RecyclerView.Adapter<NotaViewHolder> {
     private final List<Nota> notas;
     private final Context context;
 
-    public ListaNotasAdapter(Context context, List<Nota> notas){
+    public ListaNotasAdapter(Context context, List<Nota> notas) {
         this.context = context;
         this.notas = notas;
     }
@@ -42,23 +42,23 @@ public class ListaNotasAdapter extends RecyclerView.Adapter<NotaViewHolder> {
         return notas.size();
     }
 
-    public void adiciona(Nota nota){
+    public void adiciona(Nota nota) {
         notas.add(nota);
         notifyDataSetChanged();
     }
 }
 
-class NotaViewHolder extends RecyclerView.ViewHolder{
+class NotaViewHolder extends RecyclerView.ViewHolder {
     private final TextView titulo;
     private final TextView descricao;
 
     public NotaViewHolder(@NonNull View itemView) {
         super(itemView);
-         titulo = itemView.findViewById(R.id.item_nota_titulo);
-         descricao = itemView.findViewById(R.id.item_nota_descricao);
+        titulo = itemView.findViewById(R.id.item_nota_titulo);
+        descricao = itemView.findViewById(R.id.item_nota_descricao);
     }
 
-    public void vincula(Nota nota){
+    public void vincula(Nota nota) {
         titulo.setText(nota.getTitulo());
         descricao.setText(nota.getDescricao());
     }
