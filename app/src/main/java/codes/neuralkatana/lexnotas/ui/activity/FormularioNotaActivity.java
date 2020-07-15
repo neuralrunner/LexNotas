@@ -13,14 +13,38 @@ import codes.neuralkatana.R;
 import codes.neuralkatana.lexnotas.model.Nota;
 
 import static codes.neuralkatana.lexnotas.ui.activity.NotaActivityConstantes.CHAVE_NOTA;
-import static codes.neuralkatana.lexnotas.ui.activity.NotaActivityConstantes.CODIGO_RESULTADO_NOTA_CRIADA;
+import static codes.neuralkatana.lexnotas.ui.activity.NotaActivityConstantes.CHAVE_POSICAO;
+import static codes.neuralkatana.lexnotas.ui.activity.NotaActivityConstantes.POSICAO_INVALIDA;
 
 public class FormularioNotaActivity extends AppCompatActivity {
+    private int posicaoRecebida = POSICAO_INVALIDA;
+    private EditText titulo;
+    private EditText descricao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_formulario_nota);
+
+        inicializaCampos();
+
+        Intent dadosRecebidos = getIntent();
+        if(dadosRecebidos.hasExtra(CHAVE_NOTA)){
+            Nota notaRecebida = (Nota) dadosRecebidos
+                    .getSerializableExtra(CHAVE_NOTA);
+            posicaoRecebida = dadosRecebidos.getIntExtra(CHAVE_POSICAO,POSICAO_INVALIDA);
+            preencheCampos(notaRecebida);
+        }
+    }
+
+    private void preencheCampos(Nota notaRecebida) {
+        titulo.setText(notaRecebida.getTitulo());
+        descricao.setText(notaRecebida.getDescricao());
+    }
+
+    private void inicializaCampos() {
+        titulo = findViewById(R.id.formulario_nota_titulo);
+        descricao = findViewById(R.id.formulario_nota_descricao);
     }
 
     @Override
@@ -42,13 +66,13 @@ public class FormularioNotaActivity extends AppCompatActivity {
     private void retornaNota(Nota nota) {
         Intent resultadoInsercao = new Intent();
         resultadoInsercao.putExtra(CHAVE_NOTA, nota);
-        setResult(CODIGO_RESULTADO_NOTA_CRIADA, resultadoInsercao);
+        resultadoInsercao.putExtra(CHAVE_POSICAO,posicaoRecebida);
+        setResult(RESULT_OK, resultadoInsercao);
     }
 
     private Nota criaNota() {
-        EditText titulo = findViewById(R.id.formulario_nota_titulo);
-        EditText descricao = findViewById(R.id.formulario_nota_descricao);
-        return new Nota(titulo.getText().toString(), descricao.getText().toString());
+        return new Nota(titulo.getText().toString(),
+                descricao.getText().toString());
     }
 
     private boolean isMenuSalvaNota(@NonNull MenuItem item) {

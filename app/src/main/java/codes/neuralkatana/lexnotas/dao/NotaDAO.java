@@ -31,6 +31,14 @@ public class NotaDAO {
         Collections.swap(notas, posicaoInicio, posicaoFim);
     }
 
+    public boolean isEmpty(){
+        if(todos().isEmpty()){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
     public void removeTodos() {
         notas.clear();
     }
