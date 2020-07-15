@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
@@ -17,6 +18,7 @@ import codes.neuralkatana.lexnotas.dao.NotaDAO;
 import codes.neuralkatana.lexnotas.model.Nota;
 import codes.neuralkatana.lexnotas.ui.recyclerview.adapter.ListaNotasAdapter;
 import codes.neuralkatana.lexnotas.ui.recyclerview.adapter.listener.OnItemClickListener;
+import codes.neuralkatana.lexnotas.ui.recyclerview.helper.callback.NotaItemTouchHelperCallback;
 
 import static codes.neuralkatana.lexnotas.ui.activity.NotaActivityConstantes.CHAVE_NOTA;
 import static codes.neuralkatana.lexnotas.ui.activity.NotaActivityConstantes.CHAVE_POSICAO;
@@ -26,11 +28,13 @@ import static codes.neuralkatana.lexnotas.ui.activity.NotaActivityConstantes.POS
 
 public class ListaNotasActivity extends AppCompatActivity {
 
+    public static final String TITULO_APPBAR = "NOTAS";
     private ListaNotasAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTitle(TITULO_APPBAR);
         setContentView(R.layout.activity_lista_notas);
         NotaDAO dao = new NotaDAO();
         criaRecyclerView(dao);
@@ -91,18 +95,27 @@ public class ListaNotasActivity extends AppCompatActivity {
     private void criaRecyclerView(NotaDAO dao) {
         RecyclerView listaDeNotas = findViewById(R.id.lista_notas_recyclerview);
         //NOTE:LayoutManager está configurado no XML
-        if (dao.isEmpty()) {
+        /*if (dao.isEmpty()) {
             dao = mockDAO(dao);
-        }
+        }*/
         List<Nota> todasNotas = dao.todos();
         adapter = new ListaNotasAdapter(this, todasNotas);
         listaDeNotas.setAdapter(adapter);
+
         adapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(Nota nota, int posicao) {
                 vaiParaFormularioNotaAltera(nota, posicao);
             }
         });
+        configuraItemTouchHelper(listaDeNotas);
+
+    }
+
+    private void configuraItemTouchHelper(RecyclerView listaDeNotas) {
+        //ItemTouchHelper e NotaItemTouchHelperCallback, responsáveis pela animação do RecyclerView
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new NotaItemTouchHelperCallback(adapter));
+        itemTouchHelper.attachToRecyclerView(listaDeNotas);
     }
 
     private void vaiParaFormularioNotaInsere() {
@@ -132,7 +145,7 @@ public class ListaNotasActivity extends AppCompatActivity {
 
     private boolean isResultadoAlteraNota(int requestCode, @Nullable Intent data) {
         return isCodigoRequisicaoAlteraNota(requestCode)
-                && hasNotaNoDataExtra(data)
+                && hasNotaDataExtra(data)
                 && hasChavePosicao(data);
     }
 
@@ -145,11 +158,11 @@ public class ListaNotasActivity extends AppCompatActivity {
     }
 
     private boolean isResultadoInsereNota(int requestCode, @Nullable Intent data) {
-        return isCodigoDeRequisicaoInsereNota(requestCode) && hasNotaNoDataExtra(data);
+        return isCodigoDeRequisicaoInsereNota(requestCode) && hasNotaDataExtra(data);
     }
 
-    private boolean hasNotaNoDataExtra(@Nullable Intent data) {
-        return data.hasExtra(CHAVE_NOTA);
+    private boolean hasNotaDataExtra(Intent data) {
+        return data!= null && data.hasExtra(CHAVE_NOTA);
     }
 
     private boolean isCodigoResultadoOK(int resultCode) {

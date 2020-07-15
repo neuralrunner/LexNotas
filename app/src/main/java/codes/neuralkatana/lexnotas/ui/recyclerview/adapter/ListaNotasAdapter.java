@@ -9,6 +9,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.Collections;
 import java.util.List;
 
 import codes.neuralkatana.R;
@@ -55,7 +56,19 @@ public class ListaNotasAdapter extends RecyclerView.Adapter<ListaNotasAdapter.No
 
     public void altera(int posicao, Nota nota) {
         notas.set(posicao,nota);
-        notifyDataSetChanged();
+        notifyItemChanged(posicao);
+    }
+
+    public void remove(int posicao) {
+        notas.remove(posicao);
+        //Deixa a Animação mais Fluída na hora de remoção
+        notifyItemRemoved(posicao);
+    }
+
+    public void troca(int posicaoInicial, int posicaoFinal) {
+        Collections.swap(notas,posicaoInicial,posicaoFinal);
+        //Deixa a Animação mais Fluída na hora de Trocar
+        notifyItemMoved(posicaoInicial,posicaoFinal);
     }
 
     class NotaViewHolder extends RecyclerView.ViewHolder {
